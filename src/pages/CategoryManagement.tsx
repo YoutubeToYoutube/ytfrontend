@@ -122,7 +122,7 @@ export default function CategoryManagement() {
   
   // General state
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("categories");
+  const [activeTab, setActiveTab] = useState("media");
   const { showAlert } = useAlerts();
 
   // Form for creating categories
@@ -524,178 +524,15 @@ export default function CategoryManagement() {
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="categories" className="flex items-center gap-2">
-              <Folder className="h-4 w-4" />
-              Catégories ({categories.length})
-            </TabsTrigger>
             <TabsTrigger value="media" className="flex items-center gap-2">
               <FileVideo className="h-4 w-4" />
               Médias ({medias.length})
             </TabsTrigger>
+            <TabsTrigger value="categories" className="flex items-center gap-2">
+              <Folder className="h-4 w-4" />
+              Catégories ({categories.length})
+            </TabsTrigger>
           </TabsList>
-
-          {/* Categories Tab */}
-          <TabsContent value="categories" className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <div className="relative">
-                  <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Rechercher des catégories..."
-                    value={categorySearchQuery}
-                    onChange={(e) => setCategorySearchQuery(e.target.value)}
-                    className="pl-8 w-[300px]"
-                  />
-                </div>
-              </div>
-              <Dialog open={isCreateCategoryDialogOpen} onOpenChange={setIsCreateCategoryDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button>
-                    <FolderPlus className="mr-2 h-4 w-4" />
-                    Créer une catégorie
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Créer une nouvelle catégorie</DialogTitle>
-                    <DialogDescription>
-                      Ajoutez une nouvelle catégorie pour organiser vos médias.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <Form {...createCategoryForm}>
-                    <form onSubmit={createCategoryForm.handleSubmit(handleCreateCategory)} className="space-y-4">
-                      <FormField
-                        control={createCategoryForm.control}
-                        name="name"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Nom</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Nom de la catégorie" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={createCategoryForm.control}
-                        name="description"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Description</FormLabel>
-                            <FormControl>
-                              <Textarea 
-                                placeholder="Description de la catégorie" 
-                                {...field} 
-                                rows={3}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <div className="flex justify-end space-x-2">
-                        <Button 
-                          type="button" 
-                          variant="outline" 
-                          onClick={() => setIsCreateCategoryDialogOpen(false)}
-                        >
-                          Annuler
-                        </Button>
-                        <Button type="submit">Créer</Button>
-                      </div>
-                    </form>
-                  </Form>
-                </DialogContent>
-              </Dialog>
-            </div>
-
-            {/* Categories Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {currentCategories.map((category) => (
-                <Card key={category.id} className="hover:shadow-lg transition-shadow">
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium flex items-center">
-                      <Tag className="mr-2 h-4 w-4" />
-                      {category.name}
-                    </CardTitle>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                          <span className="sr-only">Ouvrir le menu</span>
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem onClick={() => openEditCategoryDialog(category)}>
-                          <Edit className="mr-2 h-4 w-4" />
-                          Modifier
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem 
-                          onClick={() => handleDeleteCategory(category.id, category.name)}
-                          className="text-red-600"
-                        >
-                          <Trash2 className="mr-2 h-4 w-4" />
-                          Supprimer
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2">
-                      <p className="text-sm text-muted-foreground line-clamp-3">
-                        {category.description}
-                      </p>
-                      <div className="flex items-center justify-between text-xs text-muted-foreground">
-                        <span>{category.mediasCount || 0} médias</span>
-                        <span>{category.datetime ? new Date(category.datetime).toLocaleDateString() : 'N/A'}</span>
-                      </div>
-                    </div>
-                  </CardContent>
-                  <CardFooter className="pt-2">
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="w-full"
-                      onClick={() => {
-                        setSelectedCategoryId(category.id.toString());
-                        setActiveTab("media");
-                      }}
-                    >
-                      Voir les médias
-                    </Button>
-                  </CardFooter>
-                </Card>
-              ))}
-            </div>
-
-            {/* Categories Pagination */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <PaginationInfo
-                  currentPage={categoriesCurrentPage}
-                  totalPages={categoriesTotalPages}
-                  totalItems={filteredCategories.length}
-                  itemsPerPage={itemsPerPage}
-                  itemName="catégories"
-                />
-                <PageSizeSelector
-                  pageSize={itemsPerPage}
-                  onPageSizeChange={handleCategoriesPageSizeChange}
-                  pageSizeOptions={[6, 12, 18, 24]}
-                  itemName="catégories"
-                />
-              </div>
-              <Pagination
-                currentPage={categoriesCurrentPage}
-                totalPages={categoriesTotalPages}
-                onPageChange={paginateCategories}
-                maxVisiblePages={5}
-              />
-            </div>
-          </TabsContent>
 
           {/* Media Tab */}
           <TabsContent value="media" className="space-y-6">
@@ -942,6 +779,169 @@ export default function CategoryManagement() {
                 totalPages={mediaTotalPages}
                 onPageChange={paginateMedia}
                 maxVisiblePages={7}
+              />
+            </div>
+          </TabsContent>
+
+          {/* Categories Tab */}
+          <TabsContent value="categories" className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <div className="relative">
+                  <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Rechercher des catégories..."
+                    value={categorySearchQuery}
+                    onChange={(e) => setCategorySearchQuery(e.target.value)}
+                    className="pl-8 w-[300px]"
+                  />
+                </div>
+              </div>
+              <Dialog open={isCreateCategoryDialogOpen} onOpenChange={setIsCreateCategoryDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button>
+                    <FolderPlus className="mr-2 h-4 w-4" />
+                    Créer une catégorie
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Créer une nouvelle catégorie</DialogTitle>
+                    <DialogDescription>
+                      Ajoutez une nouvelle catégorie pour organiser vos médias.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <Form {...createCategoryForm}>
+                    <form onSubmit={createCategoryForm.handleSubmit(handleCreateCategory)} className="space-y-4">
+                      <FormField
+                        control={createCategoryForm.control}
+                        name="name"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Nom</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Nom de la catégorie" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={createCategoryForm.control}
+                        name="description"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Description</FormLabel>
+                            <FormControl>
+                              <Textarea 
+                                placeholder="Description de la catégorie" 
+                                {...field} 
+                                rows={3}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <div className="flex justify-end space-x-2">
+                        <Button 
+                          type="button" 
+                          variant="outline" 
+                          onClick={() => setIsCreateCategoryDialogOpen(false)}
+                        >
+                          Annuler
+                        </Button>
+                        <Button type="submit">Créer</Button>
+                      </div>
+                    </form>
+                  </Form>
+                </DialogContent>
+              </Dialog>
+            </div>
+
+            {/* Categories Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {currentCategories.map((category) => (
+                <Card key={category.id} className="hover:shadow-lg transition-shadow">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium flex items-center">
+                      <Tag className="mr-2 h-4 w-4" />
+                      {category.name}
+                    </CardTitle>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="h-8 w-8 p-0">
+                          <span className="sr-only">Ouvrir le menu</span>
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuItem onClick={() => openEditCategoryDialog(category)}>
+                          <Edit className="mr-2 h-4 w-4" />
+                          Modifier
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem 
+                          onClick={() => handleDeleteCategory(category.id, category.name)}
+                          className="text-red-600"
+                        >
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          Supprimer
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      <p className="text-sm text-muted-foreground line-clamp-3">
+                        {category.description}
+                      </p>
+                      <div className="flex items-center justify-between text-xs text-muted-foreground">
+                        <span>{category.mediasCount || 0} médias</span>
+                        <span>{category.datetime ? new Date(category.datetime).toLocaleDateString() : 'N/A'}</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                  <CardFooter className="pt-2">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="w-full"
+                      onClick={() => {
+                        setSelectedCategoryId(category.id.toString());
+                        setActiveTab("media");
+                      }}
+                    >
+                      Voir les médias
+                    </Button>
+                  </CardFooter>
+                </Card>
+              ))}
+            </div>
+
+            {/* Categories Pagination */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <PaginationInfo
+                  currentPage={categoriesCurrentPage}
+                  totalPages={categoriesTotalPages}
+                  totalItems={filteredCategories.length}
+                  itemsPerPage={itemsPerPage}
+                  itemName="catégories"
+                />
+                <PageSizeSelector
+                  pageSize={itemsPerPage}
+                  onPageSizeChange={handleCategoriesPageSizeChange}
+                  pageSizeOptions={[6, 12, 18, 24]}
+                  itemName="catégories"
+                />
+              </div>
+              <Pagination
+                currentPage={categoriesCurrentPage}
+                totalPages={categoriesTotalPages}
+                onPageChange={paginateCategories}
+                maxVisiblePages={5}
               />
             </div>
           </TabsContent>

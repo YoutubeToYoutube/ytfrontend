@@ -8,7 +8,7 @@ import {
   Menu,
   X,
   LogOut,
-  FolderOpen
+  FileVideo
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -49,9 +49,9 @@ export function Sidebar({ className }: SidebarProps) {
       // requiredRole: "ROLE_ADMIN"
     },
     {
-      title: "Catégories",
+      title: "Medias",
       href: "/categories",
-      icon: <FolderOpen className="h-5 w-5" />,
+      icon: <FileVideo className="h-5 w-5" />,
       // requiredRole: "ROLE_OPERATOR"
     },
     {
