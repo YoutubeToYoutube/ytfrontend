@@ -1,4 +1,3 @@
-import React from "react";
 import { Button } from "@/components/ui/button";
 import {
   ChevronLeft,
@@ -226,4 +225,4 @@ export function PageSizeSelector({
       <span className="text-sm text-muted-foreground">{itemName} par page</span>
     </div>
   );
-} 
+}

@@ -95,7 +95,7 @@ const mediaFormSchema = z.object({
   categoryId: z.string().refine(val => val !== "_all" && val !== "", {
     message: "Veuillez sélectionner une catégorie.",
   }),
-  isActive: z.boolean().default(true),
+  isActive: z.boolean(),
 });
 
 export default function CategoryManagement() {
