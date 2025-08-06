@@ -81,10 +81,10 @@ export function Sidebar({ className }: SidebarProps) {
               <Link to="/dashboard" className="flex items-center">
                 <span className="text-xl font-bold">YT Frontend</span>
               </Link>
-              <Button variant="ghost" size="icon" onClick={() => setOpen(false)}>
+              {/* <Button variant="ghost" size="icon" onClick={() => setOpen(false)}>
                 <X className="h-5 w-5" />
                 <span className="sr-only">Close menu</span>
-              </Button>
+              </Button> */}
             </div>
             <Separator className="my-4" />
             <nav className="flex-1">

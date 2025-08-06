@@ -1,5 +1,5 @@
-import { Video } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CheckCircle, XCircle, Video } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface MediaStatsProps {
   totalMedia: number;
@@ -7,44 +7,50 @@ interface MediaStatsProps {
   inactiveMedia: number;
 }
 
-export function MediaStats({ 
-  totalMedia, 
-  activeMedia, 
-  inactiveMedia
-}: MediaStatsProps) {
-  const stats = [
-    {
-      title: "Total des médias",
-      value: totalMedia,
-      icon: <Video className="h-4 w-4 text-blue-600" />,
-    },
-    {
-      title: "Médias actifs",
-      value: activeMedia,
-      icon: <Video className="h-4 w-4 text-green-600" />,
-    },
-    {
-      title: "Médias inactifs",
-      value: inactiveMedia,
-      icon: <Video className="h-4 w-4 text-red-600" />,
-    }
-  ];
-
+export function MediaStats({ totalMedia, activeMedia, inactiveMedia }: MediaStatsProps) {
   return (
     <div className="grid gap-4 md:grid-cols-3">
-      {stats.map((stat, index) => (
-        <Card key={index}>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              {stat.title}
-            </CardTitle>
-            {stat.icon}
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stat.value}</div>
-          </CardContent>
-        </Card>
-      ))}
+      <Card>
+        <CardContent className="p-4 flex items-center justify-between">
+          <div className="flex items-center">
+            <Video className="h-5 w-5 mr-2 text-gray-500" />
+            <div>
+              <p className="text-sm font-medium">Total Médias</p>
+              <p className="text-2xl font-bold">{totalMedia}</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+      
+      <Card>
+        <CardContent className="p-4 flex items-center justify-between">
+          <div className="flex items-center">
+            <CheckCircle className="h-5 w-5 mr-2 text-green-500" />
+            <div>
+              <p className="text-sm font-medium">Médias Actifs</p>
+              <p className="text-2xl font-bold">{activeMedia}</p>
+            </div>
+          </div>
+          <div className="text-sm text-muted-foreground">
+            {totalMedia > 0 ? Math.round((activeMedia / totalMedia) * 100) : 0}%
+          </div>
+        </CardContent>
+      </Card>
+      
+      <Card>
+        <CardContent className="p-4 flex items-center justify-between">
+          <div className="flex items-center">
+            <XCircle className="h-5 w-5 mr-2 text-red-500" />
+            <div>
+              <p className="text-sm font-medium">Médias Inactifs</p>
+              <p className="text-2xl font-bold">{inactiveMedia}</p>
+            </div>
+          </div>
+          <div className="text-sm text-muted-foreground">
+            {totalMedia > 0 ? Math.round((inactiveMedia / totalMedia) * 100) : 0}%
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 } 

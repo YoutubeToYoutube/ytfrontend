@@ -27,9 +27,30 @@ api.interceptors.request.use(
 // Add a response interceptor to handle common errors
 api.interceptors.response.use(
   (response) => {
+    // Log successful responses for debugging
+    console.log(`API Response [${response.config.method?.toUpperCase()}] ${response.config.url}:`, {
+      status: response.status,
+      data: response.data,
+    });
     return response;
   },
   (error) => {
+    // Log error responses for debugging
+    if (error.response) {
+      console.error(`API Error [${error.config?.method?.toUpperCase()}] ${error.config?.url}:`, {
+        status: error.response.status,
+        data: error.response.data,
+        headers: error.response.headers,
+      });
+    } else if (error.request) {
+      console.error(`API Request Error [${error.config?.method?.toUpperCase()}] ${error.config?.url}:`, {
+        request: error.request,
+        message: error.message,
+      });
+    } else {
+      console.error('API Setup Error:', error.message);
+    }
+
     // Handle 401 Unauthorized errors (token expired, etc.)
     if (error.response && error.response.status === 401) {
       // Clear token and redirect to login

@@ -17,7 +17,9 @@ import {
   XCircle,
   Filter,
   Folder,
+  Settings,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -65,6 +67,7 @@ import { Switch } from "@/components/ui/switch";
 import { FormDescription } from "@/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Pagination, PaginationInfo, PageSizeSelector } from "@/components/ui/pagination";
+import { VisuallyHidden } from "@/components/ui/visually-hidden";
 import { useAlerts } from "@/hooks/useAlerts";
 import categoryService, { 
   type ApiCategory, 
@@ -124,6 +127,7 @@ export default function CategoryManagement() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("media");
   const { showAlert } = useAlerts();
+  const navigate = useNavigate();
 
   // Form for creating categories
   const createCategoryForm = useForm<z.infer<typeof categoryFormSchema>>({
@@ -502,6 +506,10 @@ export default function CategoryManagement() {
 
   const mediaStats = calculateMediaStats();
 
+  const navigateToMediaDetail = (mediaId: number) => {
+    navigate(`/media/${mediaId}`);
+  };
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -577,9 +585,11 @@ export default function CategoryManagement() {
                   </Button>
                 </DialogTrigger>
                 <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Créer un nouveau média</DialogTitle>
-                    <DialogDescription>
+                                      <DialogHeader>
+                      <VisuallyHidden>
+                        <DialogTitle>Créer un nouveau média</DialogTitle>
+                      </VisuallyHidden>
+                      <DialogDescription>
                       Ajoutez un nouveau média à une catégorie.
                     </DialogDescription>
                   </DialogHeader>
@@ -691,7 +701,21 @@ export default function CategoryManagement() {
             {/* Media Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {currentMedias.map((media) => (
-                <Card key={media.id} className="hover:shadow-lg transition-shadow">
+                <Card 
+                  key={media.id} 
+                  className="hover:shadow-lg transition-shadow cursor-pointer"
+                  onClick={(e) => {
+                    // Prevent navigation if clicking on dropdown menu or its children
+                    if (
+                      e.target instanceof Element && 
+                      (e.target.closest('[data-dropdown-menu]') || 
+                       e.target.closest('button'))
+                    ) {
+                      return;
+                    }
+                    navigateToMediaDetail(media.id);
+                  }}
+                >
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium flex items-center">
                       {getPlatformIcon(media.name)}
@@ -699,13 +723,17 @@ export default function CategoryManagement() {
                     </CardTitle>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
+                        <Button variant="ghost" className="h-8 w-8 p-0" data-dropdown-menu>
                           <span className="sr-only">Ouvrir le menu</span>
                           <MoreHorizontal className="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuItem onClick={() => navigateToMediaDetail(media.id)}>
+                          <Settings className="mr-2 h-4 w-4" />
+                          Configurer
+                        </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => openEditMediaDialog(media)}>
                           <Edit className="mr-2 h-4 w-4" />
                           Modifier
@@ -805,9 +833,11 @@ export default function CategoryManagement() {
                   </Button>
                 </DialogTrigger>
                 <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Créer une nouvelle catégorie</DialogTitle>
-                    <DialogDescription>
+                                      <DialogHeader>
+                      <VisuallyHidden>
+                        <DialogTitle>Créer une nouvelle catégorie</DialogTitle>
+                      </VisuallyHidden>
+                      <DialogDescription>
                       Ajoutez une nouvelle catégorie pour organiser vos médias.
                     </DialogDescription>
                   </DialogHeader>
@@ -950,9 +980,11 @@ export default function CategoryManagement() {
         {/* Edit Category Dialog */}
         <Dialog open={isEditCategoryDialogOpen} onOpenChange={setIsEditCategoryDialogOpen}>
           <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Modifier la catégorie</DialogTitle>
-              <DialogDescription>
+                          <DialogHeader>
+                <VisuallyHidden>
+                  <DialogTitle>Modifier la catégorie</DialogTitle>
+                </VisuallyHidden>
+                <DialogDescription>
                 Modifiez les informations de la catégorie.
               </DialogDescription>
             </DialogHeader>
@@ -1006,9 +1038,11 @@ export default function CategoryManagement() {
         {/* Edit Media Dialog */}
         <Dialog open={isEditMediaDialogOpen} onOpenChange={setIsEditMediaDialogOpen}>
           <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Modifier le média</DialogTitle>
-              <DialogDescription>
+                          <DialogHeader>
+                <VisuallyHidden>
+                  <DialogTitle>Modifier le média</DialogTitle>
+                </VisuallyHidden>
+                <DialogDescription>
                 Modifiez les informations du média.
               </DialogDescription>
             </DialogHeader>

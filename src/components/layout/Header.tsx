@@ -68,12 +68,6 @@ export function Header() {
                 <span>Profil</span>
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link to="/settings">
-                <User className="mr-2 h-4 w-4" />
-                <span>Paramètres</span>
-              </Link>
-            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleLogout}>
               Se déconnecter

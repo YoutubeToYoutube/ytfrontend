@@ -11,18 +11,19 @@ import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import UserManagement from "./pages/UserManagement";
 import CategoryManagement from "./pages/CategoryManagement";
+import MediaDetail from "./pages/MediaDetail";
 
 import { AuthProvider } from "./context/AuthContext";
 import { AlertProvider } from "./context/AlertContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Unauthorized from "./pages/Unauthorized";
 import { useAuth } from "./hooks/useAuth";
+import Settings from "./pages/Settings";
 
 // Admin page example
 const AdminPage = () => <div>Admin Page - Only for administrators</div>;
 
 // Settings page placeholder
-const SettingsPage = () => <div>Settings Page</div>;
 
 // Component to handle public routes (login, register) with redirection
 const PublicRoute = ({ children }: { children: React.ReactNode }) => {
@@ -86,7 +87,7 @@ function AppRoutes() {
       <Route element={<ProtectedRoute />}>
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/settings" element={<SettingsPage />} />
+        <Route path="/settings" element={<Settings />} />
         {/* <Route path="/users" element={<UserManagement />} /> */}
       </Route>
 
@@ -99,6 +100,7 @@ function AppRoutes() {
       {/* Protected routes with role requirements - Admin and Operator */}
       <Route element={<ProtectedRoute requiredRoles={["ROLE_ADMIN", "ROLE_OPERATOR", "admin", "operator"]} />}>
         <Route path="/categories" element={<CategoryManagement />} />
+        <Route path="/media/:id" element={<MediaDetail />} />
       </Route>
 
       {/* Redirection des routes inconnues vers la page de connexion */}
